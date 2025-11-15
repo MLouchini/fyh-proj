@@ -10,8 +10,6 @@ BuddyBud is an educational platform that uses AI to provide personalized homewor
 - **Study Plans**: Personalized learning recommendations
 
 ## Key Features
-
-✅ **100% Database-Driven** - All data persisted, no placeholders
 ✅ **OpenAI GPT-4 Integration** - Real AI-generated feedback
 ✅ **Per-Question Breakdown** - Granular analysis storage
 ✅ **Video Recording** - Interview sessions saved
