@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Answers - BuddyBud{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ homework.title }}</h1>
+    <p>Teacher: {{ homework.teacher.get_full_name|default:"Teacher" }} | Due: {{ homework.due_date|date:"M d, Y" }} | {{ homework.num_questions }} Questions | {{ homework.total_marks }} marks</p>
+    
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px; margin-top: 40px;">
+        <div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="card">
+                    <h2>Submit Your Answers</h2>
+                    
+                    <label for="student_name">Your Name</label>
+                    <input type="text" id="student_name" name="student_name" placeholder="Enter your name" required>
+                    
+                    <h3 style="margin-top: 30px;">Option 1: Upload File</h3>
+                    <input type="file" id="answer_file" name="answer_file" accept=".pdf,.jpg,.jpeg,.png,.docx">
+                    <p style="margin-top: 5px;">Supports: PDF, Images (JPG, PNG), DOCX</p>
+                    
+                    <h3 style="margin-top: 30px;">Option 2: Type Answers</h3>
+                    <textarea name="answer_text" style="min-height: 200px;" placeholder="Question 1: [Your answer]
+
+Question 2: [Your answer]
+
+..."></textarea>
+                    
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">Submit Answers</button>
+                </div>
+            </form>
+        </div>
+        
+        <div>
+            <div class="card">
+                <h3>Questions</h3>
+                {% for i in "12345"|slice:":5" %}
+                    {% if forloop.counter <= homework.num_questions %}
+                    <p><strong>Q{{ forloop.counter }}</strong></p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
+            <div class="card" style="margin-top: 20px;">
+                <h3>Tips:</h3>
+                <p>• Show your working clearly</p>
+                <p>• Label diagrams properly</p>
+                <p>• Include units in calculations</p>
+                <p>• Explain your reasoning</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

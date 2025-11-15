@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}Complete Results - BuddyBud{% endblock %}
+
+{% block extra_css %}
+<style>
+    .tabs { display: flex; border-bottom: 1px solid #333; margin-bottom: 30px; }
+    .tab { padding: 12px 24px; background: transparent; border: none; color: #999; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .tab.active { color: #D4F14E; border-bottom-color: #D4F14E; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Complete Results</h1>
+    <p>Homework: {{ submission.homework.title }}</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 40px 0;">
+        <div class="card" style="text-align: center;">
+            <h2>{{ submission.written_score }}%</h2>
+            <p>Written Work</p>
+        </div>
+        
+        <div class="card" style="text-align: center;">
+            <h2>{{ submission.interview_score }}%</h2>
+            <p>Interview</p>
+        </div>
+        
+        <div class="card" style="text-align: center;">
+            <h2>{{ submission.overall_score }}%</h2>
+            <p>Overall Score</p>
+        </div>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('written')">Written Feedback</button>
+        <button class="tab" onclick="showTab('interview')">Understanding Check</button>
+        <button class="tab" onclick="showTab('plan')">Study Plan</button>
+    </div>
+    
+    <div id="written" class="tab-content active">
+        <h2>Written Work Analysis</h2>
+        
+        {% if question_feedbacks %}
+            {% for qf in question_feedbacks %}
+            <div class="card" style="margin: 20px 0;">
+                <h3>Question {{ qf.question_number }}: {{ qf.question_title }}</h3>
+                <p><strong>{{ qf.marks_awarded }}/{{ qf.marks_total }} marks ({{ qf.percentage }}%)</strong></p>
+                
+                {% if qf.strengths %}
+                <h4>Strengths:</h4>
+                {% for strength in qf.strengths %}
+                <p>• {{ strength }}</p>
+                {% endfor %}
+                {% endif %}
+                
+                {% if qf.improvements %}
+                <h4>Needs Work:</h4>
+                {% for improvement in qf.improvements %}
+                <p>• {{ improvement }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Question feedback not available.</p>
+        {% endif %}
+    </div>
+    
+    <div id="interview" class="tab-content">
+        <h2>Understanding Check Performance</h2>
+        
+        {% if interview_data %}
+        <div class="card">
+            <h3>Interview Score: {{ submission.interview_score }}%</h3>
+        </div>
+        
+        <div class="card" style="margin: 20px 0;">
+            <h3>Learning Strengths</h3>
+            
+            <p><strong>Problem-Solving Skills: {{ interview_data.problem_solving_score }}%</strong></p>
+            
+            <p style="margin-top: 20px;"><strong>Conceptual Understanding: {{ interview_data.conceptual_understanding_score }}%</strong></p>
+            
+            <p style="margin-top: 20px;"><strong>Creative Application: {{ interview_data.creative_application_score }}%</strong></p>
+        </div>
+        
+        <div class="card">
+            <h3>Interview Highlights</h3>
+            
+            {% if interview_data.strong_moments %}
+            <h4>Strong Moments:</h4>
+            {% for moment in interview_data.strong_moments %}
+            <p>• {{ moment }}</p>
+            {% endfor %}
+            {% endif %}
+            
+            {% if interview_data.development_areas %}
+            <h4 style="margin-top: 15px;">Areas to Develop:</h4>
+            {% for area in interview_data.development_areas %}
+            <p>• {{ area }}</p>
+            {% endfor %}
+            {% endif %}
+        </div>
+        {% else %}
+        <p>Interview data not available.</p>
+        {% endif %}
+    </div>
+    
+    <div id="plan" class="tab-content">
+        <h2>Your Personalized Study Plan</h2>
+        
+        {% if study_plan_data %}
+            {% if study_plan_data.priority_topics %}
+            <div class="card">
+                <h3>Priority Focus Areas</h3>
+                
+                {% for topic in study_plan_data.priority_topics %}
+                <div {% if not forloop.first %}style="margin-top: 20px;"{% endif %}>
+                    <h4>{{ forloop.counter }}. {{ topic.topic }} {% if topic.priority %}(Priority: {{ topic.priority|title }}){% endif %}</h4>
+                    {% if topic.current_score %}
+                    <p><strong>Current Score:</strong> {{ topic.current_score }}%</p>
+                    {% endif %}
+                    {% if topic.actions %}
+                    <p><strong>Recommended Actions:</strong></p>
+                    {% for action in topic.actions %}
+                    <p>• {{ action }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            {% if study_plan_data.strength_topics %}
+            <div class="card" style="margin-top: 20px;">
+                <h3>Strengths to Maintain</h3>
+                {% for topic in study_plan_data.strength_topics %}
+                <p><strong>{{ topic }}</strong></p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            {% if study_plan_data.written_vs_verbal_analysis %}
+            <div class="card" style="margin-top: 20px;">
+                <h3>Learning Style Insights</h3>
+                <p>{{ study_plan_data.written_vs_verbal_analysis }}</p>
+                {% if study_plan_data.learning_style_insights %}
+                <p style="margin-top: 10px;">{{ study_plan_data.learning_style_insights }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% else %}
+        <p>Study plan not yet generated.</p>
+        {% endif %}
+    </div>
+    
+    <a href="{% url 'student_home' %}" class="btn" style="margin-top: 40px;">Submit Another Homework</a>
+</div>
+
+<script>
+function showTab(tabName) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    
+    event.target.classList.add('active');
+    document.getElementById(tabName).classList.add('active');
+}
+</script>
+{% endblock %}

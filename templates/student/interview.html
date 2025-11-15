@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}Interview Session - BuddyBud{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Interview Session</h1>
+        <p>Question <span id="currentQuestion">1</span> of {{ questions|length }}</p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 45% 55%; gap: 30px;">
+        <!-- Video Section -->
+        <div>
+            <div style="background: #000; border: 1px solid #333; position: relative; aspect-ratio: 4/3;">
+                <video id="interviewVideo" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+                <div style="position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; padding: 5px 10px; font-size: 14px;">
+                    ● Recording
+                </div>
+            </div>
+        </div>
+
+        <!-- Question Section -->
+        <div>
+            {% for question in questions %}
+            <div class="question-container" id="question{{ question.number }}" style="{% if forloop.counter != 1 %}display: none;{% endif %}">
+                <h2>{{ question.question }}</h2>
+                
+                <div style="margin-top: 20px;">
+                    <h3>Think About:</h3>
+                    {% for hint in question.hints %}
+                    <p>• {{ hint }}</p>
+                    {% endfor %}
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <p id="timer{{ question.number }}" style="font-size: 24px; font-weight: bold;">00:00</p>
+                    <p style="color: #999;">Time on this question</p>
+                </div>
+                
+                <div style="margin-top: 30px; display: flex; gap: 10px;">
+                    {% if question.number > 1 %}
+                    <button type="button" class="btn btn-secondary" onclick="previousQuestion({{ question.number }})" style="flex: 1;">Previous</button>
+                    {% endif %}
+                    
+                    {% if question.number < questions|length %}
+                    <button type="button" class="btn" onclick="nextQuestion({{ question.number }})" style="flex: 2;">Next Question</button>
+                    {% else %}
+                    <form method="post" id="completeForm" style="flex: 2;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn" style="width: 100%;">Complete Interview</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentQ = 1;
+    let timers = {};
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let stream = null;
+
+    async function initWebcam() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { width: { ideal: 1280 }, height: { ideal: 720 } }, 
+                audio: true 
+            });
+            document.getElementById('interviewVideo').srcObject = stream;
+            
+            mediaRecorder = new MediaRecorder(stream, {
+                mimeType: 'video/webm;codecs=vp9,opus'
+            });
+            
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data && event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+            
+            mediaRecorder.onstop = async () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                await saveRecording(blob);
+                recordedChunks = [];
+            };
+            
+            mediaRecorder.start(1000);
+            console.log('Recording started');
+            
+        } catch (err) {
+            console.error('Error accessing camera:', err);
+            alert('Please allow camera and microphone access.');
+        }
+    }
+
+    async function saveRecording(blob) {
+        const formData = new FormData();
+        formData.append('video', blob, `interview_recording_${Date.now()}.webm`);
+        formData.append('submission_id', '{{ submission.id }}');
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        
+        try {
+            const response = await fetch('{% url "save_interview_recording" %}', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                console.log('Recording saved');
+            }
+        } catch (error) {
+            console.error('Error saving recording:', error);
+        }
+    }
+
+    function startTimer(questionNum) {
+        if (!timers[questionNum]) {
+            timers[questionNum] = { seconds: 0, interval: null };
+        }
+        
+        clearInterval(timers[questionNum].interval);
+        timers[questionNum].interval = setInterval(() => {
+            timers[questionNum].seconds++;
+            const mins = Math.floor(timers[questionNum].seconds / 60);
+            const secs = timers[questionNum].seconds % 60;
+            document.getElementById(`timer${questionNum}`).textContent = 
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    function stopTimer(questionNum) {
+        if (timers[questionNum] && timers[questionNum].interval) {
+            clearInterval(timers[questionNum].interval);
+        }
+    }
+
+    function nextQuestion(current) {
+        console.log(`Moving from Q${current} to Q${current + 1}`);
+        stopTimer(current);
+        
+        const currentEl = document.getElementById(`question${current}`);
+        const nextEl = document.getElementById(`question${current + 1}`);
+        
+        if (currentEl) currentEl.style.display = 'none';
+        if (nextEl) nextEl.style.display = 'block';
+        
+        document.getElementById('currentQuestion').textContent = current + 1;
+        currentQ = current + 1;
+        startTimer(currentQ);
+    }
+
+    function previousQuestion(current) {
+        console.log(`Moving from Q${current} to Q${current - 1}`);
+        stopTimer(current);
+        
+        const currentEl = document.getElementById(`question${current}`);
+        const prevEl = document.getElementById(`question${current - 1}`);
+        
+        if (currentEl) currentEl.style.display = 'none';
+        if (prevEl) prevEl.style.display = 'block';
+        
+        document.getElementById('currentQuestion').textContent = current - 1;
+        currentQ = current - 1;
+        startTimer(currentQ);
+    }
+
+    // Handle form submission - stop recording first
+    const completeForm = document.getElementById('completeForm');
+    if (completeForm) {
+        completeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            console.log('Stopping recording before submission...');
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                // Wait a bit for recording to save
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+            
+            console.log('Submitting form...');
+            e.target.submit();
+        });
+    }
+
+    window.addEventListener('beforeunload', () => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+            mediaRecorder.stop();
+        }
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    });
+
+    initWebcam();
+    startTimer(1);
+</script>
+{% endblock %}

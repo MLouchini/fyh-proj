@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}BuddyBud - AI-Powered Learning{% endblock %}
+
+{% block content %}
+<div class="container" style="text-align: center; padding: 60px 20px;">
+    <h1 style="font-size: 48px; margin-bottom: 20px;">Submit. Interview. Improve.</h1>
+    <p style="font-size: 20px; max-width: 600px; margin: 0 auto 40px;">Get AI-powered feedback on your homework through written submissions and video interviews.</p>
+    
+    <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 80px;">
+        <a href="{% url 'student_home' %}" class="btn" style="font-size: 18px; padding: 15px 30px;">I'm a Student</a>
+        <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary" style="font-size: 18px; padding: 15px 30px;">I'm a Teacher</a>
+    </div>
+</div>
+
+<div class="container">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-bottom: 80px;">
+        <div>
+            <h2>1. Submit Answers</h2>
+            <p>Upload files or type your homework responses directly.</p>
+        </div>
+        <div>
+            <h2>2. Video Interview</h2>
+            <p>Explain your thinking in a brief recorded interview.</p>
+        </div>
+        <div>
+            <h2>3. Get Feedback</h2>
+            <p>Receive detailed analysis of your work and understanding.</p>
+        </div>
+    </div>
+    
+    <div style="border-top: 1px solid #333; padding-top: 40px;">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: center;">
+            <div>
+                <h2 style="font-size: 48px; color: #D4F14E;">{{ total_submissions|default:"1000+" }}</h2>
+                <p>Submissions Reviewed</p>
+            </div>
+            <div>
+                <h2 style="font-size: 48px; color: #D4F14E;">{{ avg_improvement|default:"15%" }}</h2>
+                <p>Average Improvement</p>
+            </div>
+            <div>
+                <h2 style="font-size: 48px; color: #D4F14E;">{{ active_teachers|default:"50+" }}</h2>
+                <p>Active Teachers</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

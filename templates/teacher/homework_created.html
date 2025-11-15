@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Homework Created - BuddyBud{% endblock %}
+
+{% block content %}
+<div class="container" style="text-align: center; max-width: 600px; margin-top: 80px;">
+    <h1>Homework Created Successfully!</h1>
+    <p>Your homework has been created and is now active.</p>
+    
+    <div class="card" style="margin: 40px 0;">
+        <h2>{{ homework.title }}</h2>
+        
+        <div style="margin: 20px 0;">
+            <h3>Homework Code:</h3>
+            <p style="font-size: 32px; font-weight: bold; font-family: monospace;">{{ homework.code }}</p>
+            <p>Share this code with your students</p>
+        </div>
+        
+        <p>Due: {{ homework.due_date|date:"M d, Y" }}</p>
+        <p>Total Marks: {{ homework.total_marks }}</p>
+        <p>Questions: {{ homework.num_questions }}</p>
+    </div>
+    
+    <div style="display: flex; gap: 10px; justify-content: center;">
+        <a href="{% url 'teacher_view_results' homework.id %}" class="btn">View Results</a>
+        <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

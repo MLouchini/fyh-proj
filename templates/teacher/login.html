@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Teacher Login - BuddyBud{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 500px; margin-top: 80px;">
+    <h1>Teacher Portal</h1>
+    <p>Access your dashboard to manage homeworks and view student progress.</p>
+    
+    <div class="card" style="margin: 40px 0;">
+        <form method="post">
+            {% csrf_token %}
+            
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            
+            <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">Login</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

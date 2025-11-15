@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Interview Setup - BuddyBud{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Interview Setup</h1>
+    <p>We'll ask you a few questions about your work to verify your understanding.</p>
+    
+    <div class="card" style="margin: 40px 0;">
+        <h2>Before We Start</h2>
+        
+        <h3 style="margin-top: 20px;">What to Expect:</h3>
+        <p>• 3-5 short questions about your answers</p>
+        <p>• Explain your thinking and approach</p>
+        <p>• Takes about 5-10 minutes</p>
+        <p>• Your camera will be recorded</p>
+        
+        <h3 style="margin-top: 30px;">Tips:</h3>
+        <p>• Speak clearly and take your time</p>
+        <p>• Explain your reasoning, not just the answer</p>
+        <p>• It's okay to say "I'm not sure" and think through it</p>
+        
+        <form method="post" style="margin-top: 30px;">
+            {% csrf_token %}
+            <button type="submit" class="btn" style="width: 100%;">Start Interview</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

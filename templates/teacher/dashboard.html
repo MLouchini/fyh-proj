@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Teacher Dashboard - BuddyBud{% endblock %}
+
+{% block nav %}
+<a href="{% url 'teacher_dashboard' %}">Dashboard</a>
+<a href="{% url 'teacher_create_homework' %}">Create Homework</a>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+        <div>
+            <h1>Welcome back, Mr. Johnson</h1>
+            <p>Here's what's happening with your classes</p>
+        </div>
+        <a href="{% url 'teacher_create_homework' %}" class="btn">+ Create Homework</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px;">
+        <div class="card" style="text-align: center;">
+            <h2>{{ total_students }}</h2>
+            <p>Total Students</p>
+        </div>
+        <div class="card" style="text-align: center;">
+            <h2>{{ homeworks.count }}</h2>
+            <p>Active Homeworks</p>
+        </div>
+        <div class="card" style="text-align: center;">
+            <h2>{{ avg_score }}%</h2>
+            <p>Average Score</p>
+        </div>
+        <div class="card" style="text-align: center;">
+            <h2>{{ completion_rate }}%</h2>
+            <p>Completion Rate</p>
+        </div>
+    </div>
+
+    <h2>Active Homeworks</h2>
+    
+    {% if homeworks %}
+        {% for homework in homeworks %}
+        <div class="card" style="margin: 20px 0; cursor: pointer;" onclick="window.location.href='{% url 'teacher_view_results' homework.id %}'">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <h3>{{ homework.title }}</h3>
+                    <p>Code: {{ homework.code }} | Due: {{ homework.due_date|date:"M d, Y" }}</p>
+                    <p>{{ homework.subject }} | {{ homework.level }}</p>
+                </div>
+                <div style="text-align: right;">
+                    <h2>{{ homework.submissions.count|default:"0" }}/30</h2>
+                    <p>submitted</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: {{ homework.submissions.count|default:0|add:"0"|floatformat:0|add:"0" }}%;"></div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <a href="{% url 'teacher_view_results' homework.id %}" class="btn btn-secondary">View Results</a>
+                <a href="#" class="btn btn-secondary">Edit</a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="card">
+            <p>No active homeworks. Create one to get started!</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

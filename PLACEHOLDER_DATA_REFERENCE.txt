@@ -1,0 +1,183 @@
+# PLACEHOLDER DATA REFERENCE
+# This file contains all the fallback/placeholder data that was removed from the system
+# Use this as a reference for expected data structures and sample content
+
+================================================================================
+WRITTEN FEEDBACK FALLBACK DATA
+================================================================================
+
+Sample Overall Feedback:
+{
+    'overall_score': 70-95 (random),
+    'overall_strengths': [
+        'Strong foundation',
+        'Good effort',
+        'Clear explanations'
+    ],
+    'overall_improvements': [
+        'Review key concepts',
+        'Practice more problems',
+        'Could provide more detail'
+    ]
+}
+
+Sample Question Feedback:
+{
+    'number': 1,
+    'title': 'Question 1',
+    'marks_awarded': 8,
+    'marks_total': 10,
+    'percentage': 80,
+    'strengths': [
+        'Good understanding of concepts',
+        'Clear explanations',
+        'Perfect application of formulas'
+    ],
+    'improvements': [
+        'Could provide more detail',
+        'Check calculations',
+        'Include units in all steps'
+    ]
+}
+
+================================================================================
+INTERVIEW QUESTIONS FALLBACK DATA
+================================================================================
+
+[
+    {
+        'number': 1,
+        'type': 'process',
+        'title': 'YOUR APPROACH',
+        'question': 'Walk me through how you approached the most challenging question.',
+        'hints': ['What steps did you take?', 'What was your thought process?']
+    },
+    {
+        'number': 2,
+        'type': 'concept',
+        'title': 'UNDERSTANDING CHECK',
+        'question': 'Explain the main concept from the homework in your own words.',
+        'hints': ['What is the core idea?', 'How would you teach this to someone?']
+    },
+    {
+        'number': 3,
+        'type': 'application',
+        'title': 'REAL-WORLD APPLICATION',
+        'question': 'Where might you use this concept in real life?',
+        'hints': ['Think about practical uses', 'Consider real-world examples']
+    },
+    {
+        'number': 4,
+        'type': 'reflection',
+        'title': 'METACOGNITION',
+        'question': 'What was the most challenging part and why?',
+        'hints': ['Reflect on your learning', 'What would you do differently?']
+    },
+    {
+        'number': 5,
+        'type': 'extension',
+        'title': 'GOING FURTHER',
+        'question': 'If you could explore one topic deeper, which would it be and why?',
+        'hints': ['What interests you most?', 'What do you want to learn more about?']
+    }
+]
+
+================================================================================
+INTERVIEW ANALYSIS FALLBACK DATA
+================================================================================
+
+{
+    'interview_score': 70-90 (random),
+    'problem_solving_score': 75,
+    'conceptual_understanding_score': 75,
+    'creative_application_score': 75,
+    'strong_moments': [
+        'Clear explanation of concepts',
+        'Good use of examples',
+        'Strong logical reasoning'
+    ],
+    'development_areas': [
+        'Could provide more detail',
+        'Practice verbal explanations',
+        'Work on technical terminology'
+    ],
+    'overall_analysis': 'Demonstrated understanding with room to grow.'
+}
+
+================================================================================
+STUDY PLAN FALLBACK DATA
+================================================================================
+
+{
+    'priority_topics': [
+        {
+            'topic': 'Electromagnetism',
+            'priority': 'high',
+            'current_score': 69,
+            'actions': [
+                'Review course materials',
+                'Practice problems',
+                'Seek additional help'
+            ]
+        }
+    ],
+    'strength_topics': [
+        'Thermodynamics',
+        'Wave Motion'
+    ],
+    'written_vs_verbal_analysis': 'Consistent performance across both formats.',
+    'learning_style_insights': 'Continue with current study methods and focus on weak areas.'
+}
+
+================================================================================
+SAMPLE INTERVIEW QUESTIONS (HARDCODED EXAMPLES)
+================================================================================
+
+Used in views.py when no AI-generated questions exist:
+
+1. Walk me through how you calculated the magnetic field strength in Q4.
+   Hints: What steps did you take? Which formulas did you use? How did you know which approach?
+
+2. If we doubled the current in that wire, what would happen to the magnetic field? Why?
+   Hints: What's the underlying principle? What equation governs this? Can you visualize what happens?
+
+3. Explain entropy in your own words and why it always increases in isolated systems.
+   Hints: Think about disorder and energy, Consider the second law of thermodynamics
+
+4. How would you use this concept in a practical engineering scenario?
+   Hints: Think about practical uses, Consider real-world constraints
+
+5. What was the most challenging part of this homework and why?
+   Hints: Reflect on your learning process, What would you do differently next time?
+
+================================================================================
+RANDOM SCORE GENERATION LOGIC (REMOVED)
+================================================================================
+
+Written Score: random.randint(65, 95)
+Interview Score: random.randint(70, 95)
+Overall Score: (written_score + interview_score) // 2
+
+Problem Solving: written_score +/- 10%
+Conceptual Understanding: written_score +/- 10%
+Creative Application: written_score +/- 10%
+
+================================================================================
+NOTES
+================================================================================
+
+All of the above data has been REMOVED from the production code.
+
+The system now:
+- REQUIRES a valid OpenAI API key to function
+- Will raise clear errors if API key is missing/invalid
+- Only uses real AI-generated content
+- No fallback/placeholder data
+
+If you need to test without an API key, you can temporarily restore fallback
+logic by copying sections from this file back into:
+- core/ai_service.py (_generate_fallback_* methods)
+- core/views.py (fallback assignments)
+
+================================================================================
+

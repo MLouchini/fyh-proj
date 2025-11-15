@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Portal - BuddyBud{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Student Portal</h1>
+    <p>Submit your homework and get personalized feedback.</p>
+    
+    <div style="margin: 40px 0;">
+        <a href="{% url 'student_code_entry' %}" class="btn" style="font-size: 18px; padding: 15px 30px;">Enter Homework Code</a>
+    </div>
+    
+    <div style="margin-top: 60px;">
+        <h2>How It Works</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 30px;">
+            <div class="card">
+                <h3>1. Submit Answers</h3>
+                <p>Upload your completed homework or type your answers directly into the platform.</p>
+            </div>
+            <div class="card">
+                <h3>2. Video Interview</h3>
+                <p>Answer a few questions on camera about your approach and understanding.</p>
+            </div>
+            <div class="card">
+                <h3>3. Get Feedback</h3>
+                <p>Receive detailed feedback on both your written work and conceptual understanding.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

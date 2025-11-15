@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Your Feedback - BuddyBud{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Initial Feedback</h1>
+    <p>Homework: {{ submission.homework.title }}</p>
+    
+    <div class="card" style="margin: 40px 0; text-align: center;">
+        <h2>Written Score: {{ submission.written_score }}%</h2>
+        <p>{{ submission.homework.total_marks|floatformat:0 }} marks total</p>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('overview')">Overview</button>
+        <button class="tab" onclick="showTab('questions')">Question Breakdown</button>
+    </div>
+    
+    <div id="overview" class="tab-content active">
+        <h2>Overall Performance</h2>
+        
+        <div class="card">
+            <h3>Strengths</h3>
+            {% if overall_strengths %}
+                {% for strength in overall_strengths %}
+                <p>• {{ strength }}</p>
+                {% endfor %}
+            {% else %}
+                <p>Analysis in progress...</p>
+            {% endif %}
+        </div>
+        
+        <div class="card" style="margin-top: 20px;">
+            <h3>Areas for Improvement</h3>
+            {% if overall_improvements %}
+                {% for improvement in overall_improvements %}
+                <p>• {{ improvement }}</p>
+                {% endfor %}
+            {% else %}
+                <p>Analysis in progress...</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div id="questions" class="tab-content">
+        <h2>Question Breakdown</h2>
+        
+        {% if questions_feedback %}
+            {% for q in questions_feedback %}
+            <div class="card" style="margin: 20px 0;">
+                <h3>Question {{ q.number }}: {{ q.title }}</h3>
+                <p><strong>Score:</strong> {{ q.marks }}/{{ q.total }} marks ({{ q.percentage }}%)</p>
+                
+                {% if q.strengths %}
+                <h4 style="margin-top: 15px;">Strengths:</h4>
+                {% for strength in q.strengths %}
+                <p>• {{ strength }}</p>
+                {% endfor %}
+                {% endif %}
+                
+                {% if q.improvements %}
+                <h4 style="margin-top: 15px;">Room to Grow:</h4>
+                {% for improvement in q.improvements %}
+                <p>• {{ improvement }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Question feedback is being generated...</p>
+        {% endif %}
+    </div>
+    
+    <div class="card" style="margin: 40px 0; background: rgba(212, 241, 78, 0.1); border-color: #D4F14E;">
+        <h2>Next: Understanding Check</h2>
+        <p>Complete a brief interview to demonstrate your understanding and potentially improve your score.</p>
+        <a href="{% url 'student_interview_prep' %}" class="btn" style="width: 100%; margin-top: 20px;">Continue to Interview</a>
+    </div>
+</div>
+
+<script>
+function showTab(tabName) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    
+    event.target.classList.add('active');
+    document.getElementById(tabName).classList.add('active');
+}
+</script>
+{% endblock %}

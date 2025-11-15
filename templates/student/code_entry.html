@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Enter Homework Code - BuddyBud{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 700px;">
+    <h1>Enter Homework Code</h1>
+    <p>Enter the code provided by your teacher to access the homework.</p>
+    
+    <div class="card" style="margin: 40px 0;">
+        <form method="post">
+            {% csrf_token %}
+            <label for="code">Homework Code</label>
+            <input 
+                type="text" 
+                id="code" 
+                name="code" 
+                placeholder="PHY-2024-A3B7"
+                required
+                style="text-transform: uppercase; text-align: center; font-weight: bold; font-size: 18px;"
+            >
+            <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Continue</button>
+        </form>
+    </div>
+    
+    <div>
+        <h3>Example Codes:</h3>
+        <p>PHY-2024-A3B7 - Physics A-Level</p>
+        <p>CHE-2024-X9P2 - Chemistry GCSE</p>
+        <p>MAT-2024-Z1K9 - Mathematics Year 12</p>
+    </div>
+    
+    <div style="margin-top: 40px;">
+        <h3>What Happens Next:</h3>
+        <p><strong>1. Submit Your Answers</strong> - Upload or type your homework responses</p>
+        <p><strong>2. Quick Understanding Check</strong> - Brief interview about your approach</p>
+        <p><strong>3. Get Detailed Feedback</strong> - See where you excelled and can improve</p>
+    </div>
+</div>
+{% endblock %}
